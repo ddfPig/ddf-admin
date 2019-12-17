@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>广告位管理-{$Think.config.web.meta_title}{$Think.config.web.version}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__STATIC__/admin/css/admin.css">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <form class="layui-form" action="{:url('manage/advert/delType')}">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div style="padding-bottom: 10px;">
+                            <button class="layui-btn layui-btn-danger" lay-submit lay-filter="del" type="submit"><i class="layui-icon layui-icon-delete"></i> 删除</button>
+                            <button class="layui-btn" type="button" onclick="admin_show('添加','addType',0,0,1)"><i class="layui-icon layui-icon-add-1"></i> 添加广告位</button>
+                        </div>
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="50">
+                                <col width="80">
+                                <col width="60">
+                                <col width="150">
+                                <col width="100">
+                                <col width="100">
+                                <col width="100">
+                                <col width="180">
+                                <col width="100">
+                                <col width="150">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th><input name="layTableCheckbox" lay-filter="layTableAllChoose" type="checkbox" lay-skin="primary"></th>
+                                <th>广告位名称</th>
+                                <th>排序</th>
+                                <th><div align="center">操作</div></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {notempty name="list"}
+                            {volist name="list" id="vo"}
+                            <tr>
+                                <td><input name="id[]" type="checkbox" lay-skin="primary" value="{$vo.ID}"></td>
+                                <td>{$vo.tname}</td>
+                                <td>{$vo.sort|default='50'}</td>
+                                <td align="center">
+                                    <a onclick="admin_show('编辑','{:url('updateType',['id'=>$vo['ID']])}',0,0,1)" class="layui-btn layui-btn-normal layui-btn-xs" href="javascript:;"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+                                    <a class="layui-btn layui-btn-danger layui-btn-xs" onclick="admin_del(this,'{:url('delType',['id'=>$vo['ID']])}')"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                                </td>
+                            </tr>
+                            {/volist}
+                            {else/}
+                            <td colspan="11"> 暂时还没有内容! </td>
+                            {/notempty}
+                            </tbody>
+                        </table>
+                        <div class="page"> {$list|raw}</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/admin.js"></script>
+</body>
+</html>

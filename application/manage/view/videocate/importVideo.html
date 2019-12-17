@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>导入视频操作-{$Think.config.web.meta_title}{$Think.config.web.version}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__STATIC__/admin/css/admin.css"></head>
+<body>
+<div class="layui-card layui-card-open">
+    <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label">上传视频分类:</label>
+                <div class="layui-form-mid">{$cate}</div><br/>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">Excel模板  </label>
+                <div class="layui-form-mid"><a href="__STATIC__/excels/video.xls" style="font-weight: bold">下载</a><br/>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">生成的导入路径</label>
+                <div class="layui-input-block w500">
+                    <p>封面图片上传路径: <span style="font-weight: bold">{$picPath}</span></p>
+                    <p>视频文件上传路径: <span style="font-weight: bold">{$videoPath}</span></p>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">Excel文件</label>
+                <div class="layui-input-inline w500">
+                    <div class="input-group">
+                        <input type="text" style="width:408px;" name="pic" value="{$info.imgs|default=''}" class="layui-input">
+                        <button class="layui-btn" id="upload" type="button">导入</button>
+                        <input type="hidden" name="picID" id="picID" value="">
+                        <input type="hidden" name="imgs" id="imgs" value="{$info.imgs|default=''}">
+                    </div>
+                </div>
+                <div class="layui-input-inline w200">
+                    <img src="{$info.imgs|default=''}" id="srcimgurl" style="height:60px;float: right;margin-right: 10px">
+
+                </div>
+            </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">excel导入说明</label>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block w500">
+            <p>1.首先导入视频文件会先生成图片与视频路径，请将视频的封面图片与视频文件先上传到相应的目录下</p>
+            <p>2.填写excel文件内容，注意：分类按照系统视频分类填写，图片及视频名称+后缀与上传的文件要一致</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/admin.js"></script>
+<script type="text/javascript">
+    layui.use(['layer','upload','jquery'], function(){
+        var layer = layui.layer;
+        var upload = layui.upload;
+        //上传视频封面
+        var uploadInst = upload.render({
+            elem: '#upload',
+            url: "{:url('manage/upload/uploadexcel')}",
+            data: {dir:'excel'},
+            accept:'file',
+            size: 5242880,
+            exts:'xls|xlsx|',
+            done: function(data){
+                if(data.code){
+                    layer.msg(data.message, {icon: 1,shade: 0.3,time: 2000},function(layero, index){
+                        // $('[name="pic"]').val(data.data.url);
+                        // $("#srcimgurl").attr('src',data.data.url);
+                        // $("#picID").val(data.data.ID);
+                        // $("#imgs").val(data.data.url);
+                    });
+                }else{
+                    layer.msg(data.message, {icon: 0,shade: 0.3});
+                }
+            },
+            error: function(){
+                //请求异常回调
+            }
+        });
+    });
+</script>
+</body>
+</html>

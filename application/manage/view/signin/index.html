@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$Think.config.web.meta_title}{$Think.config.web.version}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__STATIC__/admin/css/admin.css">
+    <style>
+        body {
+            margin: 50px 0;
+            text-align: center;
+            font-family: "PingFangSC-Regular", "Open Sans", Arial, "Hiragino Sans GB", "Microsoft YaHei", "STHeiti", "WenQuanYi Micro Hei", SimSun, sans-serif;
+        }
+
+        .inp {
+            border: 1px solid #cccccc;
+            border-radius: 2px;
+            padding: 0 10px;
+            width: 278px;
+            height: 40px;
+            font-size: 18px;
+        }
+
+        .btn {
+            display: inline-block;
+            box-sizing: border-box;
+            border: 1px solid #cccccc;
+            border-radius: 2px;
+            width: 100px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 16px;
+            color: #666;
+            cursor: pointer;
+            background: white linear-gradient(180deg, #ffffff 0%, #f3f3f3 100%);
+        }
+
+        .btn:hover {
+            background: white linear-gradient(0deg, #ffffff 0%, #f3f3f3 100%)
+        }
+
+        label {
+            vertical-align: top;
+            display: inline-block;
+            width: 80px;
+            text-align: right;
+        }
+
+        #captcha {
+            width: 300px;
+            display: inline-block;
+        }
+
+        #text {
+            height: 42px;
+            width: 298px;
+            text-align: center;
+            border-radius: 2px;
+            background-color: #F3F3F3;
+            color: #BBBBBB;
+            font-size: 14px;
+            letter-spacing: 0.1px;
+            line-height: 42px;
+        }
+
+        #wait {
+            display: none;
+            height: 42px;
+            width: 298px;
+            text-align: center;
+            border-radius: 2px;
+            background-color: #F3F3F3;
+        }
+
+        .loading {
+            margin: auto;
+            width: 70px;
+            height: 20px;
+        }
+
+        .loading-dot {
+            float: left;
+            width: 8px;
+            height: 8px;
+            margin: 18px 4px;
+            background: #ccc;
+
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            border-radius: 50%;
+
+            opacity: 0;
+
+            -webkit-box-shadow: 0 0 2px black;
+            -moz-box-shadow: 0 0 2px black;
+            -ms-box-shadow: 0 0 2px black;
+            -o-box-shadow: 0 0 2px black;
+            box-shadow: 0 0 2px black;
+
+            -webkit-animation: loadingFade 1s infinite;
+            -moz-animation: loadingFade 1s infinite;
+            animation: loadingFade 1s infinite;
+        }
+
+        .loading-dot:nth-child(1) {
+            -webkit-animation-delay: 0s;
+            -moz-animation-delay: 0s;
+            animation-delay: 0s;
+        }
+
+        .loading-dot:nth-child(2) {
+            -webkit-animation-delay: 0.1s;
+            -moz-animation-delay: 0.1s;
+            animation-delay: 0.1s;
+        }
+
+        .loading-dot:nth-child(3) {
+            -webkit-animation-delay: 0.2s;
+            -moz-animation-delay: 0.2s;
+            animation-delay: 0.2s;
+        }
+
+        .loading-dot:nth-child(4) {
+            -webkit-animation-delay: 0.3s;
+            -moz-animation-delay: 0.3s;
+            animation-delay: 0.3s;
+        }
+
+        @-webkit-keyframes loadingFade {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        @-moz-keyframes loadingFade {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes loadingFade {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="login-bg">
+<div class="login">
+    <div class="message">医诊通管理平台</div>
+    <div id="darkbannerwrap"></div>
+    <form method="post" class="layui-form">
+        <input name="username" placeholder="用户账号"  type="text" lay-verify="required">
+        <hr class="hr15">
+        <input name="userpass" placeholder="用户密码"  type="password" lay-verify="required">
+        <hr class="hr15">
+        <input name="code" placeholder="验证码"  type="text" lay-verify="required" style="width: 150px;">
+        <img src="{:url('manage/signin/captcha')}" class="verify" >
+        <hr class="hr15">
+        <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
+        <hr class="hr20" >
+    </form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/admin.js"></script>
+<script>
+    var form;
+    $(function(){
+        //表单提交
+        layui.use('form', function(){
+            form = layui.form;
+            //监听提交
+            signin()
+        });
+        //验证码刷新
+        var verifyimg = $(".verify").attr("src");
+        $(".verify").click(function(){
+            if( verifyimg.indexOf('?')>0){
+                $(".verify").attr("src", verifyimg+'&random='+Math.random());
+            }else{
+                $(".verify").attr("src", verifyimg.replace(/\?.*$/,'')+'?'+Math.random());
+            }
+        });
+        //键盘登录
+        $(document).keydown(function(event) {
+            if(13 == event.keyCode) {
+                signin();
+            }
+        });
+        //登录统一函数
+        function signin() {
+            form.on('submit(login)', function(data){
+                $.post("{:url('manage/signin/login')}",data.field, function(data){
+                    if(data.code==1){
+                        window.location.href = data.url;
+                    } else {
+                        layer.msg(data.message, {icon: 0});
+                        $(".layui-form")[0].reset();
+                        //刷新验证码
+                        $(".verify").click();
+                    }
+                }, "json");
+                return false;
+            });
+        }
+    })
+</script>
+<!-- 底部结束 -->
+</body>
+</html>

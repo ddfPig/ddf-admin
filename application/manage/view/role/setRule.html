@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>更新权限列表-{$Think.config.web.meta_title}{$Think.config.web.version}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__STATIC__/admin/css/admin.css"></head>
+<body>
+<div class="layui-card layui-card-open">
+    <div class="layui-card-body">
+        <div class="layui-fluid" style="margin-top: 20px;">
+            <form class="layui-form" action="{:url('roleRule')}" method="post">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户组名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" value="{$role.gname}" placeholder="" autocomplete="off" class="layui-input" disabled>
+                        <input name="id" id="id" type="hidden" value="{$role.ID}" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">启用状态</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" {if $role.status ==1}checked{/if} value="1" name="status" lay-skin="switch" lay-filter="switchTest" lay-text="开|关" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">配置权限</label>
+                    <div class="layui-input-block">
+                        {volist name="datab" id="vo"}
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <input type="checkbox" {in name="vo.ID" value="$role['ruleNum']"}checked{/in} lay-filter="rules" name="rules[]" id="rules{$vo.ID}" value="{$vo.ID}" title="{$vo.title}" lay-skin="primary">
+                            </div>
+                            <div class="layui-card-body" id="rules_{$vo.ID}">
+                                {volist name="vo.sub" id="vo2"}
+                                <div class="layui-card" id="rules_{$vo2.ID}">
+                                    <div class="layui-card-header">
+                                        <input type="checkbox" {in name="vo2.ID" value="$role['ruleNum']"}checked{/in} lay-filter="rules" name="rules[]" lay-id="{$vo.ID},{$vo2.ID}" id="rules{$vo2.ID}" value="{$vo2.ID}" title="{$vo2.title}" lay-skin="primary">
+                                    </div>
+                                    {notempty name="vo2.sub"}
+                                    <div class="layui-card-body" style="padding: 0px 0px 10px 50px;">
+                                        {volist name="vo2.sub" id="vo3"}
+                                        <input type="checkbox" {in name="vo3.ID" value="$role['ruleNum']"}checked{/in} lay-filter="rules" name="rules[]" lay-id="{$vo.ID},{$vo2.ID},{$vo3.ID}" id="rules{$vo3.ID}" value="{$vo3.ID}" title="{$vo3.title}" lay-skin="primary">
+                                        {/volist}
+                                    </div>
+                                    {/notempty}
+                                </div>
+                                {/volist}
+                            </div>
+                        </div>
+                        {/volist}
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="ajax" type="submit">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/admin.js"></script>
+<script>
+
+    layui.use(['form','element','jquery'], function(){
+        var form = layui.form
+            ,element = layui.element
+            ,$= layui.$;
+        //选中
+        form.on('checkbox(rules)', function(data){
+            //var ch="#rules_"+data.value;
+            //选中上级
+            var str = $('#rules'+data.value).attr("lay-id");
+            if(str){
+                var strs= new Array(); //定义一数组
+
+                strs=str.split(","); //字符分割
+                for (i=0;i<strs.length-1 ;i++ )
+                {
+                    var h="#rules"+strs[i];
+                    $(h).prop("checked",true);
+                }
+                form.render('checkbox');
+            }
+
+            //选中下级的
+            var ch="#rules_"+data.value+" input[type=checkbox]";
+            //判断是否选中
+            if(data.elem.checked){
+                $(ch).prop("checked",true);
+                form.render('checkbox');
+            }else{
+                $(ch).prop("checked",false);
+                form.render('checkbox');
+            }
+        })
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>用户添加-{$Think.config.web.meta_title}{$Think.config.web.version}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__STATIC__/admin/css/admin.css"></head>
+<link rel="stylesheet" href="__STATIC__/admin/css/font.css">
+<body>
+<div class="layui-card layui-card-open">
+    <div class="layui-card-body">
+        <form class="layui-form" action="{:url()}">
+            <div class="layui-form-item">
+                <label class="layui-form-label">角色分组</label>
+                <div class="layui-input-inline">
+                    <select name="gid">
+                        <option value="">选择角色</option>
+                        {volist name="roles" id="vo"}
+                        <option value="{$vo['ID']}" {eq name="$auth_group_access|default=''" value="$vo['ID']"}selected="selected"{/eq}>{$vo.gname}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-block w500">
+                    <input type="text" name="username" {notempty name="info.id"}disabled="disabled"{/notempty} class="layui-input" value="{$info.username|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">手机号</label>
+                <div class="layui-input-block w500">
+                    <input type="text" name="mobile" class="layui-input" value="{$info.mobile|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">邮箱</label>
+                <div class="layui-input-block w500">
+                    <input type="text" name="email" class="layui-input" value="{$info.email|default=''}">
+                </div>
+            </div>
+            {notempty name="info.ID"}
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码</label>
+                <div class="layui-input-block w500">
+                    <div class="input-group">
+                        <input type="password" style="width:408px;" name="userpass" class="layui-input" value="">
+                        <button class="layui-btn" id="edit_password" type="button">修改密码</button>
+                    </div>
+                </div>
+            </div>
+            {else/}
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码</label>
+                <div class="layui-input-block w500">
+                    <input type="password" name="userpass" class="layui-input" value="">
+                </div>
+            </div>
+            {/notempty}
+            <div class="layui-form-item">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="status" value="1" title="正常" {eq name="info['status']|default=1" value="1"}checked{/eq}>
+                    <input type="radio" name="status" value="0" title="禁用" {eq name="info['status']|default=1" value="0"}checked{/eq}>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">介绍</label>
+                <div class="layui-input-block w500">
+                    <textarea name="mark" class="layui-textarea">{$info.mark|default=''}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input name="id" type="hidden" id="aid" value="{$info.ID|default=''}" />
+                    <button class="layui-btn" lay-submit lay-filter="ajax" type="submit">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/admin.js"></script>
+<script type="text/javascript">
+    var aid = $("#aid").val();
+    if(aid !=''){
+        $('#edit_password').click(function(event) {
+            $.ajax({
+                method:"post",
+                url: "{:url('modifyPass')}", //用于文件上传的服务器端请求地址
+                data: {username:$('[name="username"]').val(),userpass:$('[name="userpass"]').val(),'id':aid},
+                success:function(result){
+                    if(result.code == 1){
+                        layer.msg(result.message,{icon: 1});
+                        $('[name="password"]').val('');
+                    }else if(result.code == 0){
+                        layer.msg(result.message,{icon: 2});
+                    }
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>

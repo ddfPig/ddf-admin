@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>在线文档分类-{$Think.config.web.meta_title}{$Think.config.web.version}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__STATIC__/admin/css/admin.css"></head>
+<body>
+<div class="layui-card layui-card-open">
+    <div class="layui-card-body">
+        <form class="layui-form" lay-filter="category" action="{:url()}">
+            <div class="layui-form-item">
+                <label class="layui-form-label">上级菜单</label>
+                <div class="layui-input-block">
+                    <input type="text" name="cname" class="layui-input" disabled="disabled" value="{$category['cname']|default='顶级'}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">菜单名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="cname" lay-verify="required" class="layui-input" value="{$info.cname|default=''}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">显示状态</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="status" value="1" title="正常" {eq name="info['status']|default=1" value="1"}checked{/eq}>
+                    <input type="radio" name="status" value="0" title="禁用" {eq name="info['status']|default=1" value="0"}checked{/eq}>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">排序</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="sort" lay-verify="number" class="layui-input" value="{$info.sort|default='10'}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input name="id" type="hidden" value="{$info.ID|default=''}" />
+                    <input type="hidden" name="pid" value="{$pid}">
+                    <button class="layui-btn" lay-submit lay-filter="ajax" type="submit">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/admin.js"></script>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
